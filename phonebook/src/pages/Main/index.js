@@ -1,33 +1,42 @@
 import React, { Component } from 'react';
+import {connect} from 'react-redux';
+
 import api from '../../services/api';
 
 import Selector from '../../components/Selector';
-import AssetData from '../../components/AssetData';
+import AssetTypeData from "../../components/AssetTypeData";
+import InfoAssetType from "../../components/InfoAssetType";
 
-import { SchemeInput, TitlePage, AssetList } from "./styles";
-import { FaQuestion, FaUserAlt, FaBuilding, FaSpinner} from "react-icons/fa";
+import { Button } from "@material-ui/core";
 
-export class Main extends Component {
+import { SchemeInput, TitlePage, AssetList, } from "./styles";
+import { FaQuestion, FaUserAlt, FaBuilding, FaSpinner, FaPlus, FaStepBackward} from "react-icons/fa";
+
+class Main extends Component {
   state = {
     assetType: "",
     loading: false,
-    contacts: [],
-    companyes: []
-  }
+    contacts: [], 
+    companyes: [],
+  };
 
   async componentDidMount() {
+    // this.props.dispatch({
+    //   type: "ACTIVATE_SELECTOR"
+    // });
+
     this.setState({ loading: true });
 
     const paramsContacts = {
       selector: {
-        "@assetType": "contact",
-      },
-    }
+        "@assetType": "contact"
+      }
+    };
     const paramsCompanyes = {
       selector: {
-        "@assetType": "company",
-      },
-    }
+        "@assetType": "company"
+      }
+    };
 
     const [responseContacts, responseCompanyes] = await Promise.all([
       api.post("search", paramsContacts),
@@ -37,59 +46,86 @@ export class Main extends Component {
     this.setState({
       contacts: responseContacts.data.result,
       companyes: responseCompanyes.data.result,
-      loading : false
+      loading: false,
+      assetType: "contact",
+    });
+
+    this.props.dispatch({
+      type: "SET_TITLE_SEARCH"
+    });
+
+    this.props.dispatch({
+      type: "ACTIVATE_SELECTOR"
     });
   }
 
-  handleChangeAsset =  async e => {
+  handleChangeAsset = async e => {
     this.setState({ [e.target.name]: e.target.value });
-  }
+  };
 
   render() {
     return (
       <>
-        <TitlePage> Search </TitlePage>
+        {console.log(this.props.isSelectorActive)}
+        <TitlePage> {this.props.title} </TitlePage>
 
-        <SchemeInput loading = {this.state.loading}>
-
-          {this.state.loading ? (<FaSpinner size={30}/>):(
-            !this.state.assetType ? (
-              <FaQuestion size={30} />
-            ) : (
-                this.state.assetType === "contact" ? (
-                  <FaUserAlt size={30} />
-                ) : (
-                    <FaBuilding size={30} />
-                  )
-              )          
+        <SchemeInput loading={this.state.loading}>
+          {this.state.loading ? (
+            <FaSpinner size={30} />
+          ) : !this.state.assetType ? (
+            <FaQuestion size={30} />
+          ) : this.state.assetType === "contact" ? (
+            <FaUserAlt size={30} />
+          ) : (
+            <FaBuilding size={30} />
           )}
-        
+
           <Selector
             name="assetType"
             value={this.state.assetType}
             onChange={this.handleChangeAsset}
+            disabled={this.props.isSelectorActive}
           />
+
+          <Button
+            variant="contained"
+            color="primary"
+            title={"add " + this.state.assetType}
+            disabled={this.state.loading}
+          >
+            <FaPlus size={17} />
+          </Button>
         </SchemeInput>
 
-        <AssetList >
-      
-          {this.state.assetType === "contact" ? 
-            
-            <AssetData 
-              assetType={this.state.assetType} 
-              assetData={this.state.contacts}/>
+        {this.props.title === "Search" ? (
           
-          :this.state.assetType === "company" ? 
+          <AssetList>
           
-            <AssetData 
-              assetType={this.state.assetType}
-              assetData={this.state.companyes}/>  : (<></>)
-          }
+            {this.state.assetType === "contact" ? 
+          
+              <AssetTypeData
+                assetType={this.state.assetType}
+                assetData={this.state.contacts}
+              /> 
+              
+              :this.state.assetType === "company" ? (
+              
+              <AssetTypeData
+                assetType={this.state.assetType}
+                assetData={this.state.companyes}
+              />) : ( <></> )
+            }
 
-        </AssetList>
+          </AssetList> ):(<></>)}
+
+        {this.props.title === "Info" ? 
+          <InfoAssetType assetType={this.state.assetType}/> : <></>}
       </>
     );
   }
 }
 
-export default Main;
+export default connect(state => ({
+  title: state.title,
+  isSelectorActive: state.isSelectorActive
+}))(Main);

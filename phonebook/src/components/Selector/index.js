@@ -25,6 +25,7 @@ export default function MultilineTextFields(props) {
         onChange={props.onChange}
         variant="outlined"
         margin="normal"
+        disabled={props.disabled}
       >
         {currencies.map(option => (
           <MenuItem key={option.value} value={option.value}>

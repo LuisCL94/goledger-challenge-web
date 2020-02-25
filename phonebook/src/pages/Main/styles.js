@@ -24,6 +24,12 @@ export const SchemeInput = styled.div.attrs(props => ({
   flex-direction: row;
   align-items: center;
   justify-content:center;
+
+  button {
+    margin-top: 8px;
+    margin-left: 10px;
+    height: 35px;
+  }
 `;
 
 export const TitlePage = styled.h1`
@@ -62,8 +68,19 @@ export const AssetList = styled.ul`
   }
 `;
 
-export const Options = styled.ul`
-  list-style: none;
+export const AddButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #7159c1;
+  border: 0;
+  padding: 15px 15px;
+  margin-left: 10px;
+  margin-top: 7px;
+  border-radius: 4px;
+
+  color: white;
   display: flex;
   justify-content: center;
   align-items: center;
