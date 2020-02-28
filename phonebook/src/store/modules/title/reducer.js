@@ -10,7 +10,7 @@ export default function title(state="", action) {
       return "Edit";
     
     case 'SET_TITLE_ADD':
-      return "Add";
+      return "Add New";
       
     default:
       return state;

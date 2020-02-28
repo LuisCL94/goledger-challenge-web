@@ -1,6 +1,6 @@
 export default function title(state = [], action) {
   switch (action.type) {
-    case 'ASSET_TYPE_INFO':
+    case "ALL_CONTACTS_DATA":
       return action.payload;
 
     default:

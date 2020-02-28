@@ -40,21 +40,29 @@ export const TitlePage = styled.h1`
 export const AssetList = styled.ul`
   list-style: none;
   margin-top: 5px;
-  border: solid black;
+  /* border: solid black; */
   border-radius: 10px;
   padding: 0 20px;
-
+  background: white;
   margin: 20px 400px;
+  
+  box-shadow: 4px 4px 6px rgba(0, 0, 0, 0.1);
+
+  span {
+    color: #706f6f;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
 
   li {
-    padding: 15px 0;
+    padding: 10px 0;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
 
     & + li {
-      border-top: 1px solid #eee;
+      border-top: 1px solid #dbdbdb;
     }
 
     a {

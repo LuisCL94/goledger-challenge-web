@@ -1,16 +1,26 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-// import React from "react";
 import { FaEye, FaTrashAlt } from "react-icons/fa";
 import { MdEdit } from "react-icons/md";
 
-import { Button } from "@material-ui/core";
+import { IconButton } from "@material-ui/core";
 import { Options } from "./styles";
 
-// import { Link } from "react-router-dom";
+let listAssetType = [];
 
 class AssetTypeData extends Component {
+
+  state = {
+    listAssetType: []
+  }
+
+  componentDidMount() {
+    if(this.props.assetType === "contact") 
+      this.setState({listAssetType: this.props.allContacts})
+    else if(this.props.assetType === "company")
+      this.setState({listAssetType: this.props.allCompanies})
+  }
 
   handleDispathActions = (action, data) => {
     this.props.dispatch({
@@ -19,7 +29,7 @@ class AssetTypeData extends Component {
 
     this.props.dispatch({
       type: "ASSET_TYPE_INFO",
-      data
+      payload: data
     });
 
     this.props.dispatch({
@@ -27,35 +37,47 @@ class AssetTypeData extends Component {
     });
   };
 
+  handleDelete = e => {
+
+  }
+
   render() {
-    return this.props.assetData.map(data => (
+    
+    if(this.props.assetType === "contact") 
+      listAssetType = this.props.allContacts;
+    else if (this.props.assetType === "company")
+      listAssetType = this.props.allCompanies;
+
+    return (
+      listAssetType.map(data => (
+
       <li key={data.name}>
         <span>{data.name}</span>
-
         <Options>
-          {/* <Link to={"view/" + this.props.assetType + "/" + r.name}> */}
-          <Button
-            title={"view " + this.props.assetType}
+          <IconButton
+            title={"view " + this.props.assetType + " " + data.name}
             onClick={() => this.handleDispathActions("SET_TITLE_VIEW", data)}
           >
-            <FaEye size={25} color="blue" />
-          </Button>
-          {/* </Link> */}
+            <FaEye size={20} color="#9d9d9c" />
+          </IconButton>
 
-          <Button
-            title={"edit " + this.props.assetType}
+          <IconButton
+            title={"edit " + this.props.assetType + " " + data.name}
             onClick={() => this.handleDispathActions("SET_TITLE_EDIT", data)}
           >
-            <MdEdit size={25} color="black" />
-          </Button>
+            <MdEdit size={20} color="#9d9d9c" />
+          </IconButton>
 
-          <Button title={"delete " + this.props.assetType}>
-            <FaTrashAlt size={20} color="red" />
-          </Button>
+          <IconButton title={"delete " + this.props.assetType + " " + data.name}>
+            <FaTrashAlt size={15} color="#9d9d9c" />
+          </IconButton>
         </Options>
       </li>
-    ));
+    )));
   }
 }
 
-export default connect()(AssetTypeData);
+export default connect(state => ({
+  allContacts: state.allContacts,
+  allCompanies: state.allCompanies
+}))(AssetTypeData);
