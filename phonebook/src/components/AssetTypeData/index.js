@@ -11,6 +11,9 @@ import api from '../../services/api';
 let listAssetType = [];
 
 class AssetTypeData extends Component {
+  state = {
+    deleteDone: false,
+  }
 
   handleDispathActions = (action, data) => {
     this.props.dispatch({
@@ -27,30 +30,31 @@ class AssetTypeData extends Component {
     });
   };
 
-
-  // handleDelete = assetTypeName => async e => {
-  //   const params = {
-  //     "@assetType": "contact",
-  //     name: assetTypeName,
-  //   };
-  //   const response = await api.delete("delete", params);
-  //   console.log(response)
-  //   // .then((response) => {
-  //   //   console.log(response)
-  //   // }, (error) => {
-  //   //   console.log(error);
-  //   // });
-  // }
   async handleDelete(assetTypeName) {
+    var params = [];
 
-    const params = {
+    var paramsToDeleteContact = {
       "@assetType": "contact",
-      "name": assetTypeName
+      name: assetTypeName
     };
+    
+    var paramsToDeleteCompany = {
+      "@assetType": "company",
+      name: assetTypeName
+    };
+
+    if(this.props.assetType==="contact") {
+      params = paramsToDeleteContact;
+    }
+    else if (this.props.assetType === "company") {
+      params = paramsToDeleteCompany;
+    }
 
     return await api.delete("/delete", {params})
       .then((response) => {
-        console.log(response)
+        console.log(response);
+        this.setState({deleteDone: true});
+
       }, (error) => {
         console.log(error);
       });
@@ -64,8 +68,9 @@ class AssetTypeData extends Component {
       listAssetType = this.props.allCompanies;
 
     return (
+      
       listAssetType.map(data => (
-
+        <>
       <li key={data.name}>
         <span>{data.name}</span>
         <Options>
@@ -90,6 +95,8 @@ class AssetTypeData extends Component {
           </IconButton>
         </Options>
       </li>
+          {this.state.deleteDone ? window.location.reload() : <></>}
+      </>
     )));
   }
 }
