@@ -127,7 +127,7 @@ class Main extends Component {
           <EditAssetType assetType={this.state.assetType} /> : <></>}
 
         {this.props.title === "Add New" ?
-          <AddNewAssetType assetType={this.state.assetType} /> : <></>}
+          <AddNewAssetType assetType={this.state.assetType} /> : <></>}      
       </>
     );
   }

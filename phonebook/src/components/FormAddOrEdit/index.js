@@ -3,14 +3,16 @@ import { connect } from "react-redux";
 
 import { Content, Form } from "./styles";
 import { Button } from "@material-ui/core";
-import { FaStepBackward, FaSave } from "react-icons/fa";
+import { FaStepBackward, FaSave, FaSpinner } from "react-icons/fa";
 
 import Input from '../Input'
 
-import api from "../../services/api";
+import api from "../../services/api"; 
 
 class FormAddOrEdit extends Component {
   state = {
+    addOrEditDone: false,
+    loading: false,
     name: "",
 
     phone: "",
@@ -41,7 +43,6 @@ class FormAddOrEdit extends Component {
     }
   }
 
-  t
   handleChange = e => {
     this.setState({ [e.target.name]: e.target.value });
   };
@@ -56,12 +57,61 @@ class FormAddOrEdit extends Component {
     });
   };
 
-  
-  // handleAddAssetType = async e => {
-  //   const response = await api.post();
-  // }
+  handleAddAssetType = async e => {
+    this.setState({loading: true});
 
-  
+    var params = [];
+
+    var paramsContact = {
+      "@assetType": "contact",
+      name: this.state.name,
+      phone: this.state.phone,
+      company: this.state.company,
+      email: this.state.email,
+      age: Number(this.state.age)
+    };
+
+    var paramsCompany = {
+      "@assetType": "company",
+      name: this.state.name,
+      address: this.state.address,
+      nemployees: Number(this.state.nemployees),
+      number: this.state.number,
+      site: this.state.site
+    };
+
+    if(this.props.assetType === "contact") {
+      params = paramsContact;
+    }
+
+    else if(this.props.assetType === "company") {
+      params = paramsCompany;
+    }
+
+    if(this.props.title==="Add New") {
+      return await api.post("create", params)
+      .then(response => {
+        this.setState({
+           loading: false,
+           addOrEditDone: true,
+          });      
+      }, (error) => {
+        console.log(error);
+      });
+    }
+    else if(this.props.title === "Edit")
+      return await api.put("update", params)
+        .then(response => {
+          this.setState({
+            loading: false,
+            addOrEditDone: true
+          });
+          
+        }, (error) => {
+          console.log(error);
+        });
+  }
+
   render() {
     return (
       <>
@@ -70,6 +120,7 @@ class FormAddOrEdit extends Component {
             name="name"
             value={this.state.name}
             onChange={this.handleChange}
+            required
           />
 
           {this.props.assetType === "contact" ? (
@@ -83,6 +134,7 @@ class FormAddOrEdit extends Component {
                 name="phone"
                 value={this.state.phone}
                 onChange={this.handleChange}
+                required
               />
               <Input
                 name="company"
@@ -101,6 +153,7 @@ class FormAddOrEdit extends Component {
                 name="address"
                 value={this.state.address}
                 onChange={this.handleChange}
+                required
               />
               <Input
                 name="nemployees"
@@ -111,6 +164,7 @@ class FormAddOrEdit extends Component {
                 name="number"
                 value={this.state.number}
                 onChange={this.handleChange}
+                required
               />
               <Input
                 name="site"
@@ -119,30 +173,29 @@ class FormAddOrEdit extends Component {
               />
             </>
           )}
-        <Content>
-          
-          <Button
-            variant="outlined"
-            color="primary"
-            startIcon={<FaStepBackward />}
-            onClick={() => this.handleDispathActions()}
-          >
-            Back
-          </Button>
-            
-          <Button
-            variant="contained"
-            color="primary"
-            startIcon={<FaSave />}
-            // onClick={() => this.props.dispatch({
-            //   type: "SET_TITLE_SEARCH"
-            // })}
-          >
-            Save
-          </Button>
-        </Content>
-        </Form>
+          <Content loading={this.state.loading}>
+            <Button
+              variant="outlined"
+              color="primary"
+              startIcon={<FaStepBackward />}
+              onClick={() => this.handleDispathActions()}
+            >
+              Back
+            </Button>
 
+            <Button
+              variant="contained"
+              color="primary"
+              startIcon={<FaSave />}
+              onClick={this.handleAddAssetType}
+            >
+              Save
+            </Button>
+            {this.state.loading ? <FaSpinner /> : <></>}
+          </Content>
+        </Form>
+        
+        {this.state.addOrEditDone ? window.location.reload() : <></>}
       </>
     );
   }

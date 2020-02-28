@@ -41,11 +41,15 @@ export const AssetList = styled.ul`
   list-style: none;
   margin-top: 5px;
   /* border: solid black; */
+
   border-radius: 10px;
   padding: 0 20px;
   background: white;
   margin: 20px 400px;
-  
+
+  height: 450px;
+  overflow-y:scroll;
+
   box-shadow: 4px 4px 6px rgba(0, 0, 0, 0.1);
 
   span {
@@ -55,7 +59,7 @@ export const AssetList = styled.ul`
   }
 
   li {
-    padding: 10px 0;
+    padding: 8px 0;
     display: flex;
     flex-direction: row;
     justify-content: space-between;

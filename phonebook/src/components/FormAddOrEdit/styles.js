@@ -1,6 +1,24 @@
-import styled from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
+
+const rotate = keyframes`
+  from {
+    transform: rotate(0deg);
+
+  }  to {
+    transform: rotate(360deg);
+  }
+`;
 
 export const Content = styled.div`
+  
+  ${props =>
+    props.loading &&
+    css`
+      > svg {
+        animation: ${rotate} 2s linear infinite;
+      }
+  `}
+  
   display: flex;
   flex-direction: row;
   align-items: center;
